@@ -3,16 +3,24 @@ const path = require('path');
 const { execSync } = require('child_process');
 const { firefox } = require('playwright');
 
+const API_FILE = 'API.txt';
+const DATA_FILE = 'data.json';
+const TARGET_WEEK = 'Week 19';
+
 const runGitCommands = (message) => {
   try {
-    // Set git identity locally (required in CI environments)
     execSync('git config user.email "automation@company.com"', { stdio: 'inherit' });
     execSync('git config user.name "Automation Bot"', { stdio: 'inherit' });
 
-    execSync('git add data.json', { stdio: 'inherit' });
+    execSync(`git add ${DATA_FILE} ${API_FILE}`, { stdio: 'inherit' });
     execSync(`git commit -m "${message}"`, { stdio: 'inherit' });
+
+    const repoUrl = 'https://github.com/henrygreen311/Shinacomano-.git';
+    const authUrl = `https://${process.env.PAT_TOKEN}@${repoUrl.replace(/^https:\/\//, '')}`;
+    execSync(`git remote set-url origin ${authUrl}`, { stdio: 'inherit' });
+
     execSync('git push', { stdio: 'inherit' });
-    console.log('data.json successfully pushed to GitHub');
+    console.log(`${DATA_FILE} and ${API_FILE} successfully pushed to GitHub`);
   } catch (error) {
     if (error.message.includes('nothing to commit')) {
       console.log('No changes to commit.');
@@ -24,7 +32,7 @@ const runGitCommands = (message) => {
 
 (async () => {
   const scrape = async () => {
-    const browser = await firefox.launch({ headless: false });
+    const browser = await firefox.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -37,42 +45,44 @@ const runGitCommands = (message) => {
         requestUrl.includes('/api/virtuals/l/feeds/online/v1/categories/2/results/') &&
         !captured
       ) {
-        captured = true;
-        //console.log('Intercepted:', requestUrl);
-
         try {
           const jsonResponse = await response.json();
-
-          // Save API URL
-          fs.writeFileSync('API.txt', requestUrl, 'utf-8');
-          console.log('API URL saved to API.txt');
-
           const matches = jsonResponse.Results.filter(
-            (match) => match.TournamentName === 'Week 15'
+            (match) => match.TournamentName === TARGET_WEEK
           );
 
           if (matches.length === 0) {
-            //console.log('No data found for "Week 19". Skipping data.json update.');
-            await browser.close();
+            console.log(`No "${TARGET_WEEK}" found in response. Skipping.`);
             return;
           }
+
+          // Capture only if Week 19 exists
+          captured = true;
+
+          const previousUrl = fs.existsSync(API_FILE) ? fs.readFileSync(API_FILE, 'utf-8').trim() : '';
+          if (requestUrl === previousUrl) {
+            console.log('API URL already processed, skipping.');
+            return;
+          }
+
+          // Save new API URL
+          fs.writeFileSync(API_FILE, requestUrl, 'utf-8');
+          console.log('API URL saved to API.txt:', requestUrl);
 
           const newEntries = matches.map((match) => {
             const leg = match.TournamentLeg;
             const dayno = match.TournamentDayNo;
             const leagueno = match.TournamentLeagueNo;
             const tourid = match.TournamentID;
-
             const matchid = match.MatchID;
             const matchdate = match.MatchDate;
-
             const teams = match.MatchName;
             const scores = `${match.HomeTeam.TeamScore} - ${match.AwayTeam.TeamScore}`;
 
             return `leg: ${leg}, dayno:${dayno}, leagueno: ${leagueno}, tourid: ${tourid}\nmatchid:${matchid},matchdate: ${matchdate}\nteams: ${teams}\nScores: ${scores}`;
           });
 
-          const dataFilePath = path.resolve('data.json');
+          const dataFilePath = path.resolve(DATA_FILE);
           let existingData = '';
 
           if (fs.existsSync(dataFilePath)) {
@@ -84,16 +94,15 @@ const runGitCommands = (message) => {
             : newEntries.join('\n\n');
 
           fs.writeFileSync(dataFilePath, combinedData, 'utf-8');
-          //console.log('Appended new Week 19 data to data.json');
+          //console.log(`Appended new ${TARGET_WEEK} data to ${DATA_FILE}`);
 
-          // Push changes to GitHub
           const commitMessage = `Update data.json at ${new Date().toISOString()}`;
           runGitCommands(commitMessage);
         } catch (err) {
-          console.error('Error processing JSON response:', err);
+          console.error('Error processing response:', err.message);
+        } finally {
+          await browser.close();
         }
-
-        await browser.close();
       }
     });
 
@@ -104,16 +113,16 @@ const runGitCommands = (message) => {
       });
       //console.log('Page navigation successful');
     } catch (err) {
-      console.error('Page navigation failed:', err);
+      console.error('Page navigation failed:', err.message);
       await browser.close();
     }
   };
 
-  // Main loop - runs every 2 minutes indefinitely
+  // Run every 30 minutes
   while (true) {
     //console.log(`\n[${new Date().toISOString()}] Running scrape task...`);
     await scrape();
-    //console.log(`[${new Date().toISOString()}] Waiting 2 minutes...\n`);
-    await new Promise((resolve) => setTimeout(resolve, 10 * 60 * 1000));
+    //console.log(`[${new Date().toISOString()}] Waiting 30 minutes...\n`);
+    await new Promise((resolve) => setTimeout(resolve, 20 * 60 * 1000));
   }
 })();
