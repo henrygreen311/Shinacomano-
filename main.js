@@ -45,7 +45,7 @@ const runGitCommands = (message) => {
           console.log('API URL saved to API.txt');
 
           const matches = jsonResponse.Results.filter(
-            (match) => match.TournamentName === 'Week 19'
+            (match) => match.TournamentName === 'Week 14'
           );
 
           if (matches.length === 0) {
