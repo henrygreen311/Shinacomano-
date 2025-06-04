@@ -38,7 +38,7 @@ const runGitCommands = (message) => {
         !captured
       ) {
         captured = true;
-        console.log('Intercepted:', requestUrl);
+        //console.log('Intercepted:', requestUrl);
 
         try {
           const jsonResponse = await response.json();
@@ -52,7 +52,7 @@ const runGitCommands = (message) => {
           );
 
           if (matches.length === 0) {
-            console.log('No data found for "Week 19". Skipping data.json update.');
+            //console.log('No data found for "Week 19". Skipping data.json update.');
             await browser.close();
             return;
           }
@@ -84,7 +84,7 @@ const runGitCommands = (message) => {
             : newEntries.join('\n\n');
 
           fs.writeFileSync(dataFilePath, combinedData, 'utf-8');
-          console.log('Appended new Week 19 data to data.json');
+          //console.log('Appended new Week 19 data to data.json');
 
           // Push changes to GitHub
           const commitMessage = `Update data.json at ${new Date().toISOString()}`;
@@ -102,7 +102,7 @@ const runGitCommands = (message) => {
         waitUntil: 'domcontentloaded',
         timeout: 60000,
       });
-      console.log('Page navigation successful');
+      //console.log('Page navigation successful');
     } catch (err) {
       console.error('Page navigation failed:', err);
       await browser.close();
@@ -111,9 +111,9 @@ const runGitCommands = (message) => {
 
   // Main loop - runs every 2 minutes indefinitely
   while (true) {
-    console.log(`\n[${new Date().toISOString()}] Running scrape task...`);
+    //console.log(`\n[${new Date().toISOString()}] Running scrape task...`);
     await scrape();
-    console.log(`[${new Date().toISOString()}] Waiting 2 minutes...\n`);
-    await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
+    //console.log(`[${new Date().toISOString()}] Waiting 2 minutes...\n`);
+    await new Promise((resolve) => setTimeout(resolve, 10 * 60 * 1000));
   }
 })();
