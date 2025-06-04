@@ -5,12 +5,15 @@ const { firefox } = require('playwright');
 
 const runGitCommands = (message) => {
   try {
+    // Set git identity locally (required in CI environments)
+    execSync('git config user.email "automation@company.com"', { stdio: 'inherit' });
+    execSync('git config user.name "Automation Bot"', { stdio: 'inherit' });
+
     execSync('git add data.json', { stdio: 'inherit' });
     execSync(`git commit -m "${message}"`, { stdio: 'inherit' });
     execSync('git push', { stdio: 'inherit' });
     console.log('data.json successfully pushed to GitHub');
   } catch (error) {
-    // If commit fails due to no changes, skip push silently
     if (error.message.includes('nothing to commit')) {
       console.log('No changes to commit.');
     } else {
@@ -45,7 +48,7 @@ const runGitCommands = (message) => {
           console.log('API URL saved to API.txt');
 
           const matches = jsonResponse.Results.filter(
-            (match) => match.TournamentName === 'Week 14'
+            (match) => match.TournamentName === 'Week 15'
           );
 
           if (matches.length === 0) {
@@ -106,7 +109,7 @@ const runGitCommands = (message) => {
     }
   };
 
-  // Main loop - runs every 2 minutes
+  // Main loop - runs every 2 minutes indefinitely
   while (true) {
     console.log(`\n[${new Date().toISOString()}] Running scrape task...`);
     await scrape();
