@@ -1,0 +1,44 @@
+name: main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *" # Runs every 6 hours on the hour
+
+jobs:
+  run-traffic:
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: ':99.0'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Start Xvfb (Simulate GUI)
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          echo "Xvfb started with PID $!"
+
+      - name: Install Dependencies (Playwright)
+        run: |
+          npm install playwright
+          npx playwright install firefox
+
+      - name: Run main.js with timeout
+        run: |
+          # Run main.js with a timeout of 5 hours 50 minutes (21000 seconds)
+          timeout 21000 node main.js || {
+            echo "main.js completed or was terminated after 5h50m"
+            exit 0
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up Xvfb
+        if: always()
+        run: |
+          echo "Cleaning up Xvfb..."
+          pkill -f Xvfb || true
+          echo "Job completed, exiting with status 0"
+          exit 0
