@@ -5,7 +5,7 @@ const { firefox } = require('playwright');
 
 const API_FILE = 'API.txt';
 const DATA_FILE = 'data.json';
-const TARGET_WEEK = 'Week 19';
+const TARGET_WEEK = 'Week 25';
 
 const runGitCommands = (message) => {
   try {
