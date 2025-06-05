@@ -5,7 +5,7 @@ const { firefox } = require('playwright');
 
 const API_FILE = 'API.txt';
 const DATA_FILE = 'data.json';
-const TARGET_WEEK = 'Week 25';
+const TARGET_WEEK = 'Week 10';
 
 const runGitCommands = (message) => {
   try {
@@ -123,6 +123,6 @@ const runGitCommands = (message) => {
     //console.log(`\n[${new Date().toISOString()}] Running scrape task...`);
     await scrape();
     //console.log(`[${new Date().toISOString()}] Waiting 30 minutes...\n`);
-    await new Promise((resolve) => setTimeout(resolve, 20 * 60 * 1000));
+    await new Promise((resolve) => setTimeout(resolve, 30 * 60 * 1000));
   }
 })();
