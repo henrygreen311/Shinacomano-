@@ -5747,3 +5747,53 @@ leg: 1, dayno:1, leagueno: 55005, tourid: 1925338
 matchid:16318570,matchdate: 2025-06-14T14:57:00Z
 teams: IPS - BHA
 Scores: 0 - 3
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322770,matchdate: 2025-06-14T16:51:00Z
+teams: AST - WHU
+Scores: 1 - 0
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322773,matchdate: 2025-06-14T16:51:00Z
+teams: ARS - NOT
+Scores: 3 - 0
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322778,matchdate: 2025-06-14T16:51:00Z
+teams: CHE - TOT
+Scores: 2 - 1
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322782,matchdate: 2025-06-14T16:51:00Z
+teams: BHA - NEW
+Scores: 0 - 2
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322786,matchdate: 2025-06-14T16:51:00Z
+teams: BOU - BRE
+Scores: 1 - 1
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322790,matchdate: 2025-06-14T16:51:00Z
+teams: EVE - MNU
+Scores: 1 - 2
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322794,matchdate: 2025-06-14T16:51:00Z
+teams: CRY - LEI
+Scores: 0 - 2
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322799,matchdate: 2025-06-14T16:51:00Z
+teams: MNC - IPS
+Scores: 3 - 2
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322803,matchdate: 2025-06-14T16:51:00Z
+teams: FUL - LIV
+Scores: 1 - 1
+
+leg: 1, dayno:1, leagueno: 55006, tourid: 1925860
+matchid:16322807,matchdate: 2025-06-14T16:51:00Z
+teams: WOL - SOU
+Scores: 2 - 1
